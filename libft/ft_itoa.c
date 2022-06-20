@@ -11,30 +11,19 @@
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <stdio.h>
-#include <math.h>
-/*
-int ft_potencia(int size, int i)
-{
-	int k;
 
-	k = 
-	return ()
-}
-*/
-char	*ft_itoa(int n)
+int	ft_getsize(int n)
 {
-	int i;
-	int size;
-	char *s;
-	int aux;
+	int	aux;
+	int	size;
 
-	i = 0;
 	size = 1;
 	aux = n;
 	if (aux < 0)
 	{
-		aux = -aux;
+		if (n == -2147483648)
+			aux = n + 1;
+		aux = -n;
 		size++;
 	}
 	while (aux / 10 != 0)
@@ -42,27 +31,47 @@ char	*ft_itoa(int n)
 		aux = aux / 10;
 		size++;
 	}
-	
-	//printf("valor del numero de digitos: %d\n", size);
+	return (size);
+}
+
+void	ft_setbounds(char *s, int *aux, int n, int *size)
+{
+	s[*size] = '\0';
+	if (n < 0)
+	{
+		if (n == -2147483648)
+			*aux = -n - 1;
+		else
+			*aux = -n;
+		s[0] = '-';
+		*size = *size - 1;
+	}
+}
+
+char	*ft_itoa(int n)
+{	
+	int		i;
+	int		size;
+	int		aux;
+	char	*s;
+
+	i = 0;
+	size = ft_getsize(n);
+	aux = n;
 	s = (char *) malloc(sizeof(char) * (size + 1));
 	if (!s)
 		return (0);
-	s[size + 2] = '\0';
-	i = 1;
-	if (n < 0)
+	ft_setbounds(s, &aux, n, &size);
+	while (i < size)
 	{
-		aux = -n;
-		size--;
-	}
-	while (i <= size)
-	{
-		s[size - i] = 48 + (aux % 10);
-		//printf("valor de dentro %d\n", (aux % 10));
-		//printf("valor del string %c\n", s[size - i]);
+		if (n == -2147483648 && i == 0)
+			s[size - i] = 48 + (aux % 10) + 1;
+		else if (n < 0)
+			s[size - i] = 48 + (aux % 10);
+		else
+			s[size - i - 1] = 48 + (aux % 10);
 		aux = aux / 10;
 		i++;
 	}
-	if (n < 0)
-		return (ft_strjoin("-", s));
 	return (s);
 }
